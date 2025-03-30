@@ -3,8 +3,6 @@
 function encoded = Encode(data_bits)
     m = length(data_bits);
     r = 0;
-
-    % 计算所需的 parity 位数
     while 2^r < (m + r + 1)
         r = r + 1;
     end
@@ -12,7 +10,6 @@ function encoded = Encode(data_bits)
 
     encoded = zeros(1, n);
     j = 1;
-    % 插入数据位（跳过 parity 位）
     for i = 1:n
         if isPowerOfTwo(i)
             encoded(i) = 0;
@@ -21,8 +18,6 @@ function encoded = Encode(data_bits)
             j = j + 1;
         end
     end
-
-    % 计算 parity 位
     for i = 0:r-1
         parity_pos = 2^i;
         parity = 0;
@@ -89,7 +84,7 @@ encoded = Encode(data_bits);
 fprintf('Hamming code: ');
 disp(encoded);
 
-% 模拟错误：翻转第7位
+
 received = addErrorToCode(encoded, 7);
 fprintf('Received code: ');
 disp(received);
