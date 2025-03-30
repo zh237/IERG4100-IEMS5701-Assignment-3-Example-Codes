@@ -5,25 +5,22 @@ def Encode(data_bits, verbose=False):
     """Encode a binary array using standard Hamming code (SEC)."""
     m = len(data_bits)
     
-    # Step 1: Find number of parity bits required (r)
     r = 0
     while (2 ** r) < (m + r + 1):
         r += 1
-    n = m + r  # total encoded length
+    n = m + r  
 
-    # Step 2: Initialize array with parity placeholders (1-based index)
-    encoded = [0] * (n + 1)  # index 0 is unused for simplicity
-    j = 0  # data bit index
+
+    encoded = [0] * (n + 1) 
+    j = 0  
 
     for i in range(1, n + 1):
         if math.log2(i).is_integer():
-            # parity bit position (placeholder, keep as 0 for now)
             encoded[i] = 0
         else:
             encoded[i] = data_bits[j]
             j += 1
 
-    # Step 3: Calculate parity bits
     for i in range(r):
         parity_pos = 2 ** i
         parity = 0
@@ -32,7 +29,6 @@ def Encode(data_bits, verbose=False):
                 parity ^= encoded[j]
         encoded[parity_pos] = parity
 
-    # Step 4: Return encoded message (excluding index 0)
     result = encoded[1:]
 
     if verbose:
@@ -49,8 +45,8 @@ def addErrorToCode(encoded, position):
         return encoded
 
 
-    corrupted = encoded[:]  # make a copy
-    corrupted[position - 1] ^= 1  # flip the bit (0 ↔ 1)
+    corrupted = encoded[:]  
+    corrupted[position - 1] ^= 1  
     return corrupted
 
 def checkForError(received):
@@ -71,10 +67,9 @@ def checkForError(received):
         if parity != 0:
             error_pos += parity_pos
 
-    return error_pos  # 0 means no error
+    return error_pos  
 
 def recoverOriginalMessage(Corrected_code):
-    # Remove parity bits to get original data
     n = len(Corrected_code)
     data_bits = []
     for i in range(1, n + 1):
@@ -84,7 +79,6 @@ def recoverOriginalMessage(Corrected_code):
     return data_bits    
 
 if __name__ == "__main__":
-    #array = np.random.randint(0,2,20)
     array = np.array([1,1,0,1])
     Encoded_message = Encode(array, False)
     print("original code : ", array)
